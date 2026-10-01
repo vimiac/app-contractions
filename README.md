@@ -6,6 +6,8 @@ Application web installable (PWA) de suivi des contractions. **100 % locale, hor
 
 > **Modèle (BUR-49)** : **un appui = un horodatage**. Ce qui compte, c'est l'**heure** de la contraction et la **fréquence** (intervalle médian début-à-début). Ni durée, ni lieu, ni note.
 
+> **Design (BUR-53)** : refonte visuelle intégrée à partir d'un dossier de design produit par Claude Design (palette chaude sombre, accent `#a8473a`, chrono 80 px). Présentation uniquement — modèle de données et calculs inchangés.
+
 ---
 
 ## Ce que fait l'app
@@ -14,12 +16,12 @@ Application web installable (PWA) de suivi des contractions. **100 % locale, hor
 - Un gros bouton central. **Un appui enregistre une contraction à l'instant présent.** Il n'y a pas de fin à marquer, pas de contraction « en cours ».
 - Autour du bouton : **heure de la dernière contraction**, **temps écoulé depuis** (compteur vivant), **intervalle avec l'avant-dernière**.
 - **Anti double-appui (fenêtre 5 s)** : un 2e appui à moins de 5 s du précédent est ignoré et un message discret l'indique (« déjà enregistré il y a 3 s »). Visible, jamais silencieux.
-- Sous le bouton : les 10 dernières contractions (heure, intervalle).
-- **« Annuler la dernière »** : supprime la dernière saisie en un geste (rattrape un faux appui).
+- Sous le titre « Dernières » : les 3 dernières contractions (heure, intervalle). **« Annuler la dernière »** est juste au-dessus de la liste, loin du bouton, pour éviter l'appui accidentel.
+- Retour visuel après un appui réussi : le bouton passe en vert sauge, « ✓ Enregistrée à HH:MM » pendant 1,6 s.
 
 **Écran « Statistiques »** — heure et fréquence, rien d'autre
-- **Bloc « Dernière heure » en tête** : liste brute (heure, intervalle depuis la précédente), la plus récente en haut. C'est ce qu'une sage-femme demande au téléphone.
-- Tuiles : **total**, **nombre sur la dernière heure**, **intervalle médian sur la dernière heure**, **intervalle médian global**.
+- **Bloc « Dernière heure » en tête** : nombre et intervalle médian de la dernière heure en gros chiffres, puis la liste brute (heure, intervalle depuis la précédente), la plus récente en haut. C'est ce qu'une sage-femme demande au téléphone.
+- 2 tuiles : **total**, **intervalle médian global**.
 - Mention en clair : **intervalle = début à début**.
 - **Contractions par jour** (histogramme).
 - **Fréquence par jour** : intervalle **médian** début-à-début chaque jour (médiane, pas moyenne : une pause de sommeil ne la fausse pas).

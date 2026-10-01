@@ -157,15 +157,19 @@ async function main() {
   lastHourBlock ? ok('stats : bloc « Dernière heure » en tête') : fail('bloc dernière heure absent')
   // Tuiles.
   const tiles = await evalJs(`document.querySelectorAll('.tile').length`)
-  tiles === 4 ? ok('stats : 4 tuiles (total, 1 h, médiane 1 h, médiane globale)') : fail('tuiles: ' + tiles)
+  tiles === 2 ? ok('stats : 2 tuiles (total, médiane globale — refonte design 01/10 ; 1h affiché dans la carte Dernière heure)') : fail('tuiles: ' + tiles)
   await shot('02-statistiques.png')
 
   // ---------- 4) NUMÉRO MATERNITÉ (tel:) ----------
+  // Un numéro peut déjà être enregistré (profil Chrome réutilisé d'un run précédent) : dans ce cas
+  // la carte affiche le bouton d'appel + « Modifier le numéro » au lieu du champ direct (refonte design 01/10).
+  await evalJs(`(()=>{const l=[...document.querySelectorAll('.maternity-edit-link')].find(b=>/Modifier/.test(b.textContent));if(l)l.click();return true})()`)
+  await sleep(100)
   await evalJs(`(()=>{const i=document.querySelector('.maternity-edit input');const set=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value').set;set.call(i,'01 23 45 67 89');i.dispatchEvent(new Event('input',{bubbles:true}));return true})()`)
   await sleep(150)
   await evalJs(`[...document.querySelectorAll('.maternity-edit button')].find(b=>/Enregistrer/.test(b.textContent)).click(); true`)
   await sleep(200)
-  const tel = await evalJs(`(document.querySelector('.tel-link')||{}).getAttribute&&document.querySelector('.tel-link').getAttribute('href')`)
+  const tel = await evalJs(`(document.querySelector('.maternity-call')||{}).getAttribute&&document.querySelector('.maternity-call').getAttribute('href')`)
   tel === 'tel:0123456789' ? ok('maternité : lien tel: généré (' + tel + ')') : fail('lien tel absent/mauvais: ' + tel)
 
   // ---------- 5) EXPORT ----------

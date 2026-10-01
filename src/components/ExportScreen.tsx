@@ -56,35 +56,38 @@ export function ExportScreen({ ctrl, onExported }: { ctrl: UseContractions; onEx
 
   return (
     <div className="export-screen">
-      <section className="chart-block">
-        <h2>Exporter mes données</h2>
-        <p className="chart-sub">
-          Pour montrer ces chiffres à votre sage-femme ou à la maternité. Les données restent sur votre téléphone ;
-          l’export crée un fichier que vous choisissez de partager.
+      <div className="medical-notice" role="note">
+        <strong>Pas un dispositif médical.</strong> Ces données sont un relevé à montrer à votre sage-femme ou à
+        la maternité, pas un diagnostic.
+      </div>
+
+      <section className="chart-block export-card">
+        <h2>Exporter</h2>
+        <p className="export-card-text">
+          Les données restent sur ce téléphone. L’export crée un fichier que vous choisissez de partager.
         </p>
-        <div className="export-buttons">
-          <button className="secondary-button" disabled={empty} onClick={exportCsv}>
-            ⬇︎ Télécharger le CSV
-          </button>
-          <button className="secondary-button" disabled={empty} onClick={exportText}>
-            ⬇︎ Télécharger le texte
-          </button>
-          <button className="secondary-button" disabled={empty} onClick={onCopy}>
-            {copied ? '✓ Copié' : '⧉ Copier le texte'}
-          </button>
+        <button className="export-primary-button" disabled={empty} onClick={onCopy}>
+          {copied ? '✓ Copié' : 'Copier le texte'}
+        </button>
+        <div className="export-secondary-row">
+          <button className="secondary-button" disabled={empty} onClick={exportCsv}>Fichier CSV</button>
+          <button className="secondary-button" disabled={empty} onClick={exportText}>Fichier texte</button>
         </div>
         {!empty && (
-          <textarea className="export-preview" readOnly value={text}
-            aria-label="Aperçu de l’export texte" />
+          <>
+            <div className="export-preview-label">Aperçu du texte</div>
+            <textarea className="export-preview" readOnly value={text}
+              aria-label="Aperçu de l’export texte" />
+          </>
         )}
         {empty && <p className="empty">Aucune donnée à exporter pour l’instant.</p>}
       </section>
 
-      <section className="chart-block danger">
+      <section className="chart-block danger-card">
         <h2>Remise à zéro</h2>
-        <p className="chart-sub">Efface toutes les contractions de ce téléphone. Pensez à exporter avant.</p>
+        <p className="export-card-text">Efface toutes les contractions de ce téléphone. Exportez avant.</p>
         <button className="danger-button" disabled={empty} onClick={onReset}>
-          Tout effacer
+          Tout effacer…
         </button>
       </section>
     </div>

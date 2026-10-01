@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Capacitor } from '@capacitor/core'
 import { useContractions } from './hooks/useContractions'
 import { useNow } from './hooks/useNow'
 import { TimerScreen } from './components/TimerScreen'
@@ -9,9 +10,14 @@ import { needsExportReminder, EXPORT_REMINDER_DAYS } from './lib/stats'
 
 type Tab = 'timer' | 'stats' | 'export'
 
-/** Vrai si l'app tourne installée (écran d'accueil / standalone), faux en onglet navigateur. */
+/**
+ * Vrai si l'app tourne installée (écran d'accueil / standalone), faux en onglet navigateur.
+ * Dans le wrapper Capacitor (WKWebView native), `isStandalone()` renvoie faux — le bandeau
+ * d'installation n'a pas de sens sur une app déjà installée via TestFlight/l'App Store.
+ */
 function isStandalone(): boolean {
   try {
+    if (Capacitor.isNativePlatform()) return true
     return (
       (typeof window.matchMedia === 'function' &&
         window.matchMedia('(display-mode: standalone)').matches) ||
@@ -21,6 +27,33 @@ function isStandalone(): boolean {
   } catch {
     return false
   }
+}
+
+function TabIcon({ tab, active }: { tab: Tab; active: boolean }) {
+  if (tab === 'timer') {
+    return (
+      <svg className="tab-icon" viewBox="0 0 24 24">
+        {active
+          ? <circle cx="12" cy="12" r="9" fill="currentColor" />
+          : <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" strokeWidth="2" />}
+      </svg>
+    )
+  }
+  if (tab === 'stats') {
+    return (
+      <svg className="tab-icon" viewBox="0 0 24 24" fill="currentColor">
+        <rect x="4" y="12" width="4" height="8" rx="1" />
+        <rect x="10" y="6" width="4" height="14" rx="1" />
+        <rect x="16" y="9" width="4" height="11" rx="1" />
+      </svg>
+    )
+  }
+  return (
+    <svg className="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth={active ? 2.4 : 2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 4v11M7 10l5 5 5-5M5 20h14" />
+    </svg>
+  )
 }
 
 export default function App() {
@@ -59,13 +92,14 @@ export default function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>Suivi des contractions</h1>
-        <span className="disclaimer-badge" title="Outil de suivi personnel, pas un dispositif médical.">
-          suivi personnel · pas un dispositif médical
-        </span>
+        <h1>Contractions</h1>
+        <div className="app-header-sub">
+          <span className="app-header-dot" aria-hidden="true" />
+          <span>Suivi personnel · pas un dispositif médical</span>
+        </div>
       </header>
 
-      {/* Bandeau d'installation (uniquement hors mode standalone). */}
+      {/* Bandeau d'installation (uniquement hors mode standalone / hors wrapper natif). */}
       {!standalone && (
         <div className="install-banner" role="note">
           <span className="install-banner-icon" aria-hidden="true">📲</span>
@@ -78,7 +112,7 @@ export default function App() {
       {/* Rappel discret d'export (non bloquant). */}
       {showReminder && (
         <div className="export-reminder" role="note">
-          <span>
+          <span className="export-reminder-text">
             Des contractions n'ont pas été exportées depuis plus de {EXPORT_REMINDER_DAYS} jours.
             L'export est votre sauvegarde.
           </span>
@@ -104,15 +138,15 @@ export default function App() {
       <nav className="tab-bar" role="tablist">
         <button role="tab" aria-selected={tab === 'timer'}
           className={tab === 'timer' ? 'active' : ''} onClick={() => setTab('timer')}>
-          <span className="tab-icon">⏱</span><span className="tab-text">Bouton</span>
+          <TabIcon tab="timer" active={tab === 'timer'} /><span className="tab-text">Bouton</span>
         </button>
         <button role="tab" aria-selected={tab === 'stats'}
           className={tab === 'stats' ? 'active' : ''} onClick={() => setTab('stats')}>
-          <span className="tab-icon">📊</span><span className="tab-text">Statistiques</span>
+          <TabIcon tab="stats" active={tab === 'stats'} /><span className="tab-text">Statistiques</span>
         </button>
         <button role="tab" aria-selected={tab === 'export'}
           className={tab === 'export' ? 'active' : ''} onClick={() => setTab('export')}>
-          <span className="tab-icon">⬇︎</span><span className="tab-text">Export</span>
+          <TabIcon tab="export" active={tab === 'export'} /><span className="tab-text">Export</span>
         </button>
       </nav>
     </div>
