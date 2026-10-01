@@ -5,10 +5,11 @@ import { useNow } from './hooks/useNow'
 import { TimerScreen } from './components/TimerScreen'
 import { StatsScreen } from './components/StatsScreen'
 import { ExportScreen } from './components/ExportScreen'
+import { FeedbackScreen } from './components/FeedbackScreen'
 import { loadSettings, saveSettings, ensurePersistentStorage } from './lib/settings'
 import { needsExportReminder, EXPORT_REMINDER_DAYS } from './lib/stats'
 
-type Tab = 'timer' | 'stats' | 'export'
+type Tab = 'timer' | 'stats' | 'export' | 'feedback'
 
 /**
  * Vrai si l'app tourne installée (écran d'accueil / standalone), faux en onglet navigateur.
@@ -48,10 +49,18 @@ function TabIcon({ tab, active }: { tab: Tab; active: boolean }) {
       </svg>
     )
   }
+  if (tab === 'export') {
+    return (
+      <svg className="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        strokeWidth={active ? 2.4 : 2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 4v11M7 10l5 5 5-5M5 20h14" />
+      </svg>
+    )
+  }
   return (
     <svg className="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       strokeWidth={active ? 2.4 : 2} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 4v11M7 10l5 5 5-5M5 20h14" />
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 20l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
     </svg>
   )
 }
@@ -133,6 +142,7 @@ export default function App() {
           />
         )}
         {tab === 'export' && <ExportScreen ctrl={ctrl} onExported={markExported} />}
+        {tab === 'feedback' && <FeedbackScreen />}
       </main>
 
       <nav className="tab-bar" role="tablist">
@@ -147,6 +157,10 @@ export default function App() {
         <button role="tab" aria-selected={tab === 'export'}
           className={tab === 'export' ? 'active' : ''} onClick={() => setTab('export')}>
           <TabIcon tab="export" active={tab === 'export'} /><span className="tab-text">Export</span>
+        </button>
+        <button role="tab" aria-selected={tab === 'feedback'}
+          className={tab === 'feedback' ? 'active' : ''} onClick={() => setTab('feedback')}>
+          <TabIcon tab="feedback" active={tab === 'feedback'} /><span className="tab-text">Avis</span>
         </button>
       </nav>
     </div>

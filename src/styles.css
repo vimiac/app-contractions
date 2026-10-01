@@ -385,6 +385,35 @@ button {
 }
 .danger-button:disabled { opacity: 0.4; }
 
+/* ---------- Écran avis / feedback ---------- */
+.feedback-screen { display: flex; flex-direction: column; gap: 12px; padding-top: 12px; }
+.feedback-card { display: flex; flex-direction: column; gap: 10px; }
+
+.feedback-form { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.feedback-label { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.feedback-textarea {
+  width: 100%; min-height: 140px; resize: vertical;
+  background: var(--surface-2); color: var(--ink);
+  border: 1px solid var(--line); border-radius: var(--radius-control);
+  font-size: 16px; line-height: 1.4; padding: 12px 14px;
+}
+.feedback-contact-input {
+  height: 52px; background: var(--surface-2); border: 1px solid var(--line);
+  border-radius: var(--radius-control); color: var(--ink); font-size: 16px; padding: 0 14px;
+}
+/* Honeypot anti-bot : présent dans le DOM, invisible et inatteignable au clavier pour un humain. */
+.feedback-honeypot {
+  position: absolute; width: 1px; height: 1px; margin: 0; padding: 0; border: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; opacity: 0;
+}
+
+.feedback-status {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  font-size: 15px; padding: 2px 0;
+}
+.feedback-status.success { color: var(--success); }
+.feedback-status.error { color: var(--danger-ink); }
+
 /* ---------- Bandeaux (installation + rappel export) ---------- */
 .install-banner {
   display: flex; align-items: center; gap: 10px;
