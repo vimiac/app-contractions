@@ -40,6 +40,10 @@ Application web installable (PWA) de suivi des contractions. **100 % locale, hor
   `factory/services/feedback-relay` (Cloudflare Worker) qui crée une issue GitHub dans ce
   repo (labels `feedback` + `app:contractions`). Scooter lit ces issues à intervalles
   réguliers pour qualifier et alimenter la roadmap.
+- **Image jointe optionnelle (BUR-58)** : jpeg/png/webp, redimensionnée et recompressée côté
+  client (canvas, 1600 px max, JPEG q0.8) avant envoi. Le relais la commit dans le repo
+  GitHub (`feedback-images/contractions/...`) et la référence dans l'issue ; si l'upload
+  échoue côté relais (ex. permission token manquante), le message texte part quand même.
 - Champ honeypot invisible (anti-bot), validation côté client ET côté relais.
 - Sans `VITE_FEEDBACK_RELAY_URL` au build, l'onglet affiche un message « indisponible » et
   n'émet aucune requête réseau.
