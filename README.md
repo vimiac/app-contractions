@@ -8,6 +8,8 @@ Application web installable (PWA) de suivi des contractions. **100 % locale, hor
 
 > **Design (BUR-53)** : refonte visuelle intégrée à partir d'un dossier de design produit par Claude Design (palette chaude sombre, accent `#a8473a`, chrono 80 px). Présentation uniquement — modèle de données et calculs inchangés.
 
+> **Feedback (BUR-54)** : seule exception volontaire au « zéro réseau » — un onglet **Avis**, action explicite de l'utilisateur, envoie un message libre à un relais (`VITE_FEEDBACK_RELAY_URL`) qui crée une issue GitHub. Aucune contraction ni donnée personnelle enregistrée dans l'app n'est transmise. Dégradation propre (message « indisponible ») si le relais n'est pas configuré au build.
+
 ---
 
 ## Ce que fait l'app
@@ -32,6 +34,15 @@ Application web installable (PWA) de suivi des contractions. **100 % locale, hor
 - Télécharger un **CSV** (séparateur `;`, compatible Excel FR, **mention non-médicale en 1re ligne** avant l'entête) ou un **fichier texte**, ou **copier le texte** — à montrer à la sage-femme / à la maternité. Colonnes : numéro, date et heure, **intervalle début-à-début** (pas de durée).
 - **L'export est la sauvegarde** : chaque export (CSV, texte, copie) horodate le dernier export.
 - Remise à zéro (avec confirmation).
+
+**Écran « Avis »**
+- Un message libre (3 à 4000 caractères) + un contact optionnel, envoyés au relais partagé
+  `factory/services/feedback-relay` (Cloudflare Worker) qui crée une issue GitHub dans ce
+  repo (labels `feedback` + `app:contractions`). Scooter lit ces issues à intervalles
+  réguliers pour qualifier et alimenter la roadmap.
+- Champ honeypot invisible (anti-bot), validation côté client ET côté relais.
+- Sans `VITE_FEEDBACK_RELAY_URL` au build, l'onglet affiche un message « indisponible » et
+  n'émet aucune requête réseau.
 
 ## Points techniques importants
 
