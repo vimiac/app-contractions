@@ -414,6 +414,17 @@ button {
 .feedback-status.success { color: var(--success); }
 .feedback-status.error { color: var(--danger-ink); }
 
+.feedback-image-input {
+  color: var(--muted); font-size: 14px;
+}
+.feedback-image-preview {
+  display: flex; align-items: center; gap: 12px;
+}
+.feedback-image-preview img {
+  width: 72px; height: 72px; object-fit: cover;
+  border-radius: var(--radius-control); border: 1px solid var(--line);
+}
+
 /* ---------- Bandeaux (installation + rappel export) ---------- */
 .install-banner {
   display: flex; align-items: center; gap: 10px;

@@ -1,9 +1,12 @@
-import { useState } from 'react'
-import type { FormEvent } from 'react'
+import { useRef, useState } from 'react'
+import type { ChangeEvent, FormEvent } from 'react'
 import {
+  FEEDBACK_IMAGE_ACCEPTED_TYPES,
   FEEDBACK_MESSAGE_MAX,
+  compressFeedbackImage,
   feedbackAvailable,
   submitFeedback,
+  validateFeedbackImageFile,
   validateFeedbackMessage,
 } from '../lib/feedback'
 
@@ -15,8 +18,36 @@ export function FeedbackScreen() {
   const [website, setWebsite] = useState('') // honeypot : reste vide pour un humain
   const [status, setStatus] = useState<Status>('idle')
   const [error, setError] = useState<string | null>(null)
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null)
+  const [imageError, setImageError] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const available = feedbackAvailable()
+
+  const clearImage = () => {
+    if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl)
+    setImageFile(null)
+    setImagePreviewUrl(null)
+    setImageError(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
+  const onPickImage = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const validationError = validateFeedbackImageFile(file)
+    if (validationError) {
+      setImageError(validationError)
+      setImageFile(null)
+      setImagePreviewUrl(null)
+      return
+    }
+    if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl)
+    setImageError(null)
+    setImageFile(file)
+    setImagePreviewUrl(URL.createObjectURL(file))
+  }
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -27,14 +58,21 @@ export function FeedbackScreen() {
     }
     setStatus('sending')
     setError(null)
-    const result = await submitFeedback({ message, contact, website })
-    if (result.ok) {
-      setStatus('sent')
-      setMessage('')
-      setContact('')
-    } else {
+    try {
+      const image = imageFile ? await compressFeedbackImage(imageFile) : undefined
+      const result = await submitFeedback({ message, contact, website, image })
+      if (result.ok) {
+        setStatus('sent')
+        setMessage('')
+        setContact('')
+        clearImage()
+      } else {
+        setStatus('error')
+        setError(result.error)
+      }
+    } catch {
       setStatus('error')
-      setError(result.error)
+      setError("Impossible de préparer l'image, réessaie sans ou avec une autre photo.")
     }
   }
 
@@ -95,6 +133,31 @@ export function FeedbackScreen() {
               onChange={(e) => setContact(e.target.value)}
               disabled={status === 'sending'}
             />
+
+            <span className="feedback-label">Image (optionnelle)</span>
+            <input
+              ref={fileInputRef}
+              id="feedback-image"
+              type="file"
+              accept={FEEDBACK_IMAGE_ACCEPTED_TYPES.join(',')}
+              onChange={onPickImage}
+              className="feedback-image-input"
+              disabled={status === 'sending'}
+            />
+            {imagePreviewUrl && (
+              <div className="feedback-image-preview">
+                <img src={imagePreviewUrl} alt="Aperçu de l'image jointe" />
+                <button
+                  type="button"
+                  className="link-button"
+                  onClick={clearImage}
+                  disabled={status === 'sending'}
+                >
+                  Retirer l'image
+                </button>
+              </div>
+            )}
+            {imageError && <p className="feedback-status error" role="alert">{imageError}</p>}
 
             {error && <p className="feedback-status error" role="alert">{error}</p>}
 
