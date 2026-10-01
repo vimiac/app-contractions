@@ -100,7 +100,7 @@ export function TimerScreen({ ctrl }: { ctrl: UseContractions }) {
               </tr>
             </thead>
             <tbody>
-              {sorted.slice(-3).reverse().map((c) => {
+              {sorted.slice(-2).reverse().map((c) => {
                 // Intervalle = début de CETTE contraction - début de la précédente (chronologique).
                 const globalIdx = sorted.findIndex((x) => x.id === c.id)
                 const prev = globalIdx > 0 ? sorted[globalIdx - 1] : null

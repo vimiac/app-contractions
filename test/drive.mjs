@@ -107,7 +107,8 @@ async function main() {
   const clean = migrated.every((c) => typeof c.at === 'number' && !('end' in c) && !('note' in c) && !('start' in c))
   clean ? ok('migration : chaque entrée = { id, at } (end/note/start jetés)') : fail('entrées non nettoyées: ' + JSON.stringify(migrated))
   const rows = await evalJs(`document.querySelectorAll('.recent-table tbody tr').length`)
-  rows >= 3 ? ok('écran 1 : liste des dernières contractions rendue (' + rows + ' lignes)') : fail('liste dernières vide')
+  // BUR-65 : liste "Dernières" limitée aux 2 plus récentes (place verticale pour le bouton, cf styles.css).
+  rows === 2 ? ok('écran 1 : liste des dernières contractions rendue (' + rows + ' lignes)') : fail('liste dernières attendu 2, obtenu ' + rows)
   await shot('01-bouton.png')
 
   // ---------- 2) ANTI DOUBLE-APPUI (fenêtre 5 s) ----------

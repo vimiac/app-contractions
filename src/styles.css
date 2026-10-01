@@ -64,10 +64,10 @@ button {
 
 .app-header {
   flex: none;
-  padding: 6px 20px;
+  padding: 4px 20px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 .app-header h1 { font-size: 17px; font-weight: 650; letter-spacing: -0.01em; margin: 0; }
 .app-header-sub {
@@ -93,15 +93,18 @@ button {
 /* ---------- Écran chrono ---------- */
 .timer-screen { display: flex; flex-direction: column; min-height: 100%; }
 
-.status { flex: none; padding: 20px 20px 0; text-align: left; }
+/* Tailles liées à la hauteur d'écran (dvh) : sur un petit iPhone (SE…), le bouton
+   et le chrono rétrécissent pour que le bouton principal reste atteignable SANS
+   défiler (BUR-65 : sur grand écran, clampé au maximum habituel). */
+.status { flex: none; padding: clamp(4px, 1.5dvh, 12px) 20px 0; text-align: left; }
 .status-label { font-size: 15px; color: var(--muted); }
 .status-chrono {
-  font-size: 80px;
+  font-size: clamp(40px, 10dvh, 72px);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   line-height: 1;
   letter-spacing: -0.03em;
-  margin: 6px 0 16px;
+  margin: 4px 0 clamp(4px, 1.2dvh, 12px);
 }
 .status-grid {
   display: grid;
@@ -110,7 +113,7 @@ button {
   border-bottom: 1px solid var(--line);
 }
 .status-grid-item {
-  padding: 10px 0;
+  padding: 8px 0;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -127,7 +130,14 @@ button {
 .status-empty-sub { font-size: 17px; color: var(--ink-2); line-height: 1.4; }
 .status-empty-sub strong { color: var(--ink); }
 
-.recent { flex: none; padding: 14px 20px 0; }
+.recent { flex: none; padding: 10px 20px 0; }
+/* Petits écrans (SE/8, mini…) : le détail des dernières contractions cède sa place au bouton
+   principal, toujours atteignable sans défiler (BUR-65). « Annuler la dernière » reste visible
+   (agit sur la dernière contraction sans avoir besoin de voir la liste) ; l'historique complet
+   reste consultable dans Statistiques. */
+@media (max-height: 820px) {
+  .recent-table, .recent .empty { display: none; }
+}
 .recent-header {
   display: flex;
   align-items: center;
@@ -166,12 +176,12 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 16px 18px;
+  padding: 2px 16px clamp(6px, 1.5dvh, 14px);
   position: relative;
 }
 .button-ring {
-  width: 268px;
-  height: 268px;
+  width: clamp(142px, 27dvh, 182px);
+  height: clamp(142px, 27dvh, 182px);
   border-radius: 50%;
   padding: 12px;
   background: #1b1513;
