@@ -465,7 +465,7 @@ button {
 .tab-bar {
   flex: none;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   border-top: 1px solid var(--line);
   background: var(--tabbar);
   padding-bottom: max(env(safe-area-inset-bottom), 10px);
