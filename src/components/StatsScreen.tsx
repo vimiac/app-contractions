@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import {
   ResponsiveContainer, BarChart, Bar, Cell, XAxis, YAxis, Tooltip,
 } from 'recharts'
@@ -12,11 +12,14 @@ import { formatElapsed, formatInterval, formatClock } from '../lib/format'
 
 // Palette data-viz validée (surface sombre). Chaque graphe est mono-série ;
 // même couleur pour un chiffre et son graphe.
-const C_COUNT = '#e07a5f'       // corail — nombre de contractions
-const C_HOUR = '#e0a458'        // ambre — vue 24 h
-const C_HOUR_NOW = '#f2cc8f'    // heure en cours
-const C_INTERVAL = '#81b29a'    // sauge — intervalle / fréquence
-const AXIS = '#3a302c'          // --chart-axis
+// Feedback app-contractions#7 : couleurs des graphes liées à la palette choisie
+// (variables CSS définies par `.palette-*` dans styles.css, prises en charge
+// nativement par `fill`/`stroke` SVG — pas besoin de recalcul JS au changement).
+const C_COUNT = 'var(--data-count)'       // nombre de contractions
+const C_HOUR = 'var(--data-hour)'         // vue 24 h
+const C_HOUR_NOW = 'var(--data-hour-now)' // heure en cours
+const C_INTERVAL = 'var(--data-interval)' // intervalle / fréquence
+const AXIS = 'var(--chart-axis)'
 
 const HOUR_MS = 3_600_000
 
@@ -38,56 +41,10 @@ function ChartTip({ active, payload, label, unit }:
   )
 }
 
-/** 11 — Numéro de la maternité : affichage lien tel: + édition/effacement. Aucun seuil, aucun déclenchement. */
-function MaternitySection({ phone, onSave }: { phone: string; onSave: (p: string) => void }) {
-  // Édition explicite (bouton « Modifier le numéro ») : tant qu'on n'a pas enregistré,
-  // le numéro existant reste inchangé si on quitte l'écran.
-  const [editing, setEditing] = useState(false)
-  const [draft, setDraft] = useState(phone)
-
-  const startEdit = () => { setDraft(phone); setEditing(true) }
-  const save = () => { onSave(draft.trim()); setEditing(false) }
-
-  const showEditor = editing || !phone
-
-  return (
-    <section className="chart-block maternity">
-      <h2>Maternité</h2>
-      <p className="chart-sub">Numéro gardé sur ce téléphone. Aucun déclenchement automatique.</p>
-      {phone && !showEditor && (
-        <>
-          <a className="maternity-call" href={`tel:${phone.replace(/\s+/g, '')}`}>
-            <span className="maternity-call-dot" aria-hidden="true">●</span>
-            Appeler · {phone}
-          </a>
-          <button className="maternity-edit-link" onClick={startEdit}>Modifier le numéro</button>
-        </>
-      )}
-      {showEditor && (
-        <div className="maternity-edit">
-          <input
-            type="tel"
-            inputMode="tel"
-            placeholder="ex. 01 23 45 67 89"
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            aria-label="Numéro de la maternité"
-          />
-          <button disabled={!draft.trim() && !phone} onClick={save}>
-            Enregistrer
-          </button>
-        </div>
-      )}
-    </section>
-  )
-}
-
 export function StatsScreen({
-  list, maternityPhone, onSaveMaternity,
+  list,
 }: {
   list: Contraction[]
-  maternityPhone: string
-  onSaveMaternity: (p: string) => void
 }) {
   const now = useNow(30_000, true)
   const daily = useMemo(() => dailyStats(list), [list])
@@ -117,7 +74,6 @@ export function StatsScreen({
             Enregistrez des contractions depuis l’onglet <strong>Bouton</strong> pour voir les chiffres.
           </div>
         </div>
-        <MaternitySection phone={maternityPhone} onSave={onSaveMaternity} />
       </div>
     )
   }
@@ -235,8 +191,6 @@ export function StatsScreen({
           </BarChart>
         </ResponsiveContainer>
       </section>
-
-      <MaternitySection phone={maternityPhone} onSave={onSaveMaternity} />
 
       <p className="stats-foot-note">
         Ces chiffres se lisent sans interprétation. Ils ne remplacent pas un avis médical.

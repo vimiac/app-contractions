@@ -1,18 +1,23 @@
-// Réglages locaux (100% localStorage, synchrone) : date du dernier export et
-// numéro de la maternité. Stockés séparément des contractions pour ne pas
-// alourdir la clé principale. Aucun réseau, aucune donnée sortante.
+// Réglages locaux (100% localStorage, synchrone) : date du dernier export.
+// Stocké séparément des contractions pour ne pas alourdir la clé principale.
+// Aucun réseau, aucune donnée sortante.
 
 const SETTINGS_KEY = 'suivi-contractions:settings:v1'
 const PERSIST_KEY = 'suivi-contractions:persist-requested:v1'
 
+// Feedback app-contractions#7 : 5 palettes de couleurs aux tons pastels, au choix.
+export const PALETTES = ['corail', 'lavande', 'menthe', 'miel', 'rose'] as const
+export type Palette = (typeof PALETTES)[number]
+const DEFAULT_PALETTE: Palette = 'corail'
+
 export interface AppSettings {
   /** Horodatage (ms epoch) du dernier export (CSV, texte ou copie), ou null. */
   lastExportAt: number | null
-  /** Numéro de la maternité saisi par l'utilisatrice (optionnel). */
-  maternityPhone: string
+  /** Palette de couleurs choisie (accent + couleurs des graphes). */
+  palette: Palette
 }
 
-const DEFAULTS: AppSettings = { lastExportAt: null, maternityPhone: '' }
+const DEFAULTS: AppSettings = { lastExportAt: null, palette: DEFAULT_PALETTE }
 
 /** Charge les réglages. Tolérant : renvoie les valeurs par défaut si vide/corrompu. */
 export function loadSettings(): AppSettings {
@@ -23,7 +28,7 @@ export function loadSettings(): AppSettings {
     if (typeof p !== 'object' || p === null) return { ...DEFAULTS }
     return {
       lastExportAt: typeof p.lastExportAt === 'number' ? p.lastExportAt : null,
-      maternityPhone: typeof p.maternityPhone === 'string' ? p.maternityPhone : '',
+      palette: PALETTES.includes(p.palette) ? p.palette : DEFAULT_PALETTE,
     }
   } catch {
     return { ...DEFAULTS }

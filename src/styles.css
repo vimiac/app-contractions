@@ -33,6 +33,31 @@
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
+/* ---------- Palettes (feedback app-contractions#7) ----------
+   5 tons pastels au choix dans Export → Apparence. Seuls l'accent et les
+   couleurs des graphes changent ; fond/texte restent identiques pour la
+   lisibilité. `.palette-corail` = défaut, redondant avec :root mais explicite. */
+.palette-corail {
+  --accent: #a8473a; --accent-pressed: #b85242; --link: #ec8f7c;
+  --data-count: #e07a5f; --data-interval: #81b29a; --data-hour: #e0a458; --data-hour-now: #f2cc8f;
+}
+.palette-lavande {
+  --accent: #8d79c2; --accent-pressed: #9c8bcc; --link: #c3b2ec;
+  --data-count: #b7a3e3; --data-interval: #9fb8d9; --data-hour: #d6a8d1; --data-hour-now: #e8c6e4;
+}
+.palette-menthe {
+  --accent: #4f9d84; --accent-pressed: #5bad93; --link: #9fe0c7;
+  --data-count: #8fd6b8; --data-interval: #7fc2d9; --data-hour: #c7e09f; --data-hour-now: #e0f0c6;
+}
+.palette-miel {
+  --accent: #c08a2e; --accent-pressed: #cf9838; --link: #f2cc8f;
+  --data-count: #e8c171; --data-interval: #d9a86b; --data-hour: #f0db9c; --data-hour-now: #f8ecc4;
+}
+.palette-rose {
+  --accent: #bd6b84; --accent-pressed: #cc7a92; --link: #eaa8bc;
+  --data-count: #e3a3b8; --data-interval: #d9b1a3; --data-hour: #eac6d4; --data-hour-now: #f5dde5;
+}
+
 * { box-sizing: border-box; }
 
 html, body, #root { height: 100%; margin: 0; }
@@ -231,6 +256,32 @@ button {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
 }
 
+/* Frise chronologique des 10 dernières contractions, sous le bouton (feedback app-contractions#9). */
+.timeline-block { flex: none; padding: 4px 20px 16px; }
+.timeline-block h2 {
+  font-size: 15px; font-weight: 600; color: var(--ink-2); margin: 0 0 8px;
+}
+.timeline { list-style: none; margin: 0; padding: 0 0 0 6px; position: relative; }
+.timeline::before {
+  content: ""; position: absolute; left: 3px; top: 6px; bottom: 6px;
+  width: 1px; background: var(--line);
+}
+.timeline-item {
+  position: relative;
+  display: flex; align-items: baseline; gap: 10px;
+  padding: 7px 0 7px 18px;
+}
+.timeline-dot {
+  position: absolute; left: -3px; top: 50%; transform: translateY(-50%);
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--data-interval);
+}
+.timeline-item:first-child .timeline-dot { background: var(--data-count); }
+.timeline-time {
+  font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums;
+}
+.timeline-interval { font-size: 13px; color: var(--muted); }
+
 .secondary-button {
   background: var(--surface-2);
   color: var(--ink);
@@ -312,32 +363,6 @@ button {
 
 .stats-foot-note { margin: 4px 4px 0; font-size: 13px; line-height: 1.45; color: var(--ink-2); }
 
-/* ---------- Maternité ---------- */
-.maternity-call {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  height: 56px; border-radius: var(--radius-cta);
-  background: var(--surface-2); color: var(--ink);
-  font-size: 17px; font-weight: 600; text-decoration: none;
-}
-.maternity-call-dot { color: var(--data-interval); }
-.maternity-edit-link {
-  align-self: flex-start;
-  background: transparent; color: var(--muted);
-  font-size: 15px; height: 44px; padding: 0;
-}
-.maternity-edit { display: flex; gap: 8px; margin-top: 2px; }
-.maternity-edit input {
-  flex: 1 1 auto; min-width: 0;
-  height: 52px; background: var(--surface-2); border: 1px solid var(--line);
-  border-radius: var(--radius-control); color: var(--ink); font-size: 17px; padding: 0 14px;
-}
-.maternity-edit button {
-  height: 52px; padding: 0 18px; border-radius: var(--radius-control);
-  background: var(--accent); color: var(--accent-ink); font-size: 16px; font-weight: 600;
-  flex: none;
-}
-.maternity-edit button:disabled { opacity: 0.4; }
-
 /* ---------- Écran export ---------- */
 .export-screen { display: flex; flex-direction: column; gap: 12px; padding-top: 12px; }
 
@@ -388,6 +413,25 @@ button {
   border: 1px solid rgba(224, 90, 90, 0.35);
   display: flex; flex-direction: column; gap: 10px;
 }
+
+/* Sélecteur de palette (feedback app-contractions#7). Chaque swatch porte sa
+   propre classe `.palette-X` : ses variables CSS ne s'appliquent qu'à lui-même
+   (aperçu fidèle), sans toucher au reste de l'écran. */
+.palette-picker { display: flex; flex-wrap: wrap; gap: 8px; }
+.palette-swatch {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  background: var(--surface-2); border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  padding: 10px 12px; min-width: 64px;
+}
+.palette-swatch.selected { border-color: var(--accent); background: var(--surface-pressed); }
+.palette-swatch-dot {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+.palette-swatch-label { font-size: 11px; color: var(--ink-2); }
+.palette-swatch.selected .palette-swatch-label { color: var(--ink); font-weight: 600; }
 .danger-button {
   background: transparent; color: var(--danger-ink);
   border: 1.5px solid var(--danger); border-radius: var(--radius-cta);

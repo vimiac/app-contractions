@@ -6,7 +6,7 @@ import { TimerScreen } from './components/TimerScreen'
 import { StatsScreen } from './components/StatsScreen'
 import { ExportScreen } from './components/ExportScreen'
 import { FeedbackScreen } from './components/FeedbackScreen'
-import { loadSettings, saveSettings, ensurePersistentStorage } from './lib/settings'
+import { loadSettings, saveSettings, ensurePersistentStorage, type Palette } from './lib/settings'
 import { needsExportReminder, EXPORT_REMINDER_DAYS } from './lib/stats'
 
 type Tab = 'timer' | 'stats' | 'export' | 'feedback'
@@ -91,15 +91,15 @@ export default function App() {
     setReminderDismissed(false)
   }
 
-  // Numéro de la maternité (enregistrer / effacer).
-  const setMaternityPhone = (phone: string) => {
-    const s = { ...settings, maternityPhone: phone.trim() }
+  // Feedback app-contractions#7 : changement de palette (accent + couleurs des graphes).
+  const setPalette = (palette: Palette) => {
+    const s = { ...settings, palette }
     setSettings(s)
     saveSettings(s)
   }
 
   return (
-    <div className="app">
+    <div className={`app palette-${settings.palette}`}>
       <header className="app-header">
         <h1>Contractions</h1>
         <div className="app-header-sub">
@@ -134,14 +134,11 @@ export default function App() {
 
       <main className="app-main">
         {tab === 'timer' && <TimerScreen ctrl={ctrl} />}
-        {tab === 'stats' && (
-          <StatsScreen
-            list={ctrl.list}
-            maternityPhone={settings.maternityPhone}
-            onSaveMaternity={setMaternityPhone}
-          />
+        {tab === 'stats' && <StatsScreen list={ctrl.list} />}
+        {tab === 'export' && (
+          <ExportScreen ctrl={ctrl} onExported={markExported}
+            palette={settings.palette} onPaletteChange={setPalette} />
         )}
-        {tab === 'export' && <ExportScreen ctrl={ctrl} onExported={markExported} />}
         {tab === 'feedback' && <FeedbackScreen />}
       </main>
 

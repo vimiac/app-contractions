@@ -1,6 +1,11 @@
 import { useMemo, useState } from 'react'
 import type { UseContractions } from '../hooks/useContractions'
 import { toCSV, toText } from '../lib/csv'
+import { PALETTES, type Palette } from '../lib/settings'
+
+const PALETTE_LABELS: Record<Palette, string> = {
+  corail: 'Corail', lavande: 'Lavande', menthe: 'Menthe', miel: 'Miel', rose: 'Rose',
+}
 
 function downloadFile(content: string, filename: string, mime: string) {
   const blob = new Blob([content], { type: mime })
@@ -20,7 +25,14 @@ function todayStamp(): string {
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`
 }
 
-export function ExportScreen({ ctrl, onExported }: { ctrl: UseContractions; onExported: () => void }) {
+export function ExportScreen({
+  ctrl, onExported, palette, onPaletteChange,
+}: {
+  ctrl: UseContractions
+  onExported: () => void
+  palette: Palette
+  onPaletteChange: (p: Palette) => void
+}) {
   const { list, clearAll } = ctrl
   const [copied, setCopied] = useState(false)
   const text = useMemo(() => toText(list), [list])
@@ -81,6 +93,26 @@ export function ExportScreen({ ctrl, onExported }: { ctrl: UseContractions; onEx
           </>
         )}
         {empty && <p className="empty">Aucune donnée à exporter pour l’instant.</p>}
+      </section>
+
+      <section className="chart-block">
+        <h2>Apparence</h2>
+        <p className="export-card-text">Choisissez une palette de couleurs.</p>
+        <div className="palette-picker" role="radiogroup" aria-label="Palette de couleurs">
+          {PALETTES.map((p) => (
+            <button
+              key={p}
+              className={`palette-swatch palette-${p}${p === palette ? ' selected' : ''}`}
+              role="radio"
+              aria-checked={p === palette}
+              aria-label={PALETTE_LABELS[p]}
+              onClick={() => onPaletteChange(p)}
+            >
+              <span className="palette-swatch-dot" aria-hidden="true" />
+              <span className="palette-swatch-label">{PALETTE_LABELS[p]}</span>
+            </button>
+          ))}
+        </div>
       </section>
 
       <section className="chart-block danger-card">

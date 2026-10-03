@@ -51,6 +51,16 @@ export function TimerScreen({ ctrl }: { ctrl: UseContractions }) {
     toastTimer.current = window.setTimeout(() => setToast(null), UNDO_TOAST_MS)
   }
 
+  // Feedback app-contractions#9 : frise chronologique des 10 dernières, sous le bouton
+  // (distincte du bloc "Dernières" au-dessus, qui lui reste réduit à 2 pour la lecture rapide).
+  const timeline = useMemo(() => {
+    return sorted.slice(-10).reverse().map((c) => {
+      const idx = sorted.findIndex((x) => x.id === c.id)
+      const prev = idx > 0 ? sorted[idx - 1] : null
+      return { c, interval: prev ? c.at - prev.at : null }
+    })
+  }, [sorted])
+
   return (
     <div className="timer-screen">
       <div className="status" aria-live="polite">
@@ -140,6 +150,21 @@ export function TimerScreen({ ctrl }: { ctrl: UseContractions }) {
         </div>
         {toast && <div className="tap-toast" role="status">{toast}</div>}
       </div>
+
+      {timeline.length > 0 && (
+        <div className="timeline-block">
+          <h2>10 dernières</h2>
+          <ol className="timeline">
+            {timeline.map(({ c, interval }) => (
+              <li key={c.id} className="timeline-item">
+                <span className="timeline-dot" aria-hidden="true" />
+                <span className="timeline-time">{formatClock(c.at)}</span>
+                <span className="timeline-interval">{formatInterval(interval)}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
     </div>
   )
 }

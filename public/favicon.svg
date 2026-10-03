@@ -4,19 +4,22 @@
       <stop offset="0" stop-color="#1a1f2e"/>
       <stop offset="1" stop-color="#0b0d12"/>
     </linearGradient>
-    <linearGradient id="heart" x1="0" y1="0" x2="1" y2="1">
+    <linearGradient id="figure" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#e87ba4"/>
       <stop offset="1" stop-color="#d55181"/>
     </linearGradient>
   </defs>
   <rect width="512" height="512" rx="112" fill="url(#bg)"/>
-  <path fill="url(#heart)" d="M256 400
-    C 150 330, 96 268, 96 200
-    C 96 152, 134 118, 178 118
-    C 212 118, 240 140, 256 168
-    C 272 140, 300 118, 334 118
-    C 378 118, 416 152, 416 200
-    C 416 268, 362 330, 256 400 Z"/>
-  <polyline fill="none" stroke="#ffffff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"
-    points="120,250 190,250 220,205 258,300 296,225 322,250 392,250"/>
+  <!-- Silhouette de femme enceinte, de face (feedback app-contractions#8) : tête +
+       ellipses empilées à recouvrement généreux (épaules → ventre → bassin), qui se
+       fondent en une seule silhouette arrondie, + jambes. Face plutôt que profil :
+       bien plus lisible à la taille d'une icône avec des formes simples. -->
+  <g fill="url(#figure)">
+    <circle cx="256" cy="108" r="28"/>
+    <ellipse cx="256" cy="170" rx="50" ry="70"/>
+    <ellipse cx="256" cy="290" rx="92" ry="90"/>
+    <ellipse cx="256" cy="380" rx="60" ry="55"/>
+    <rect x="218" y="410" width="36" height="55" rx="18"/>
+    <rect x="258" y="410" width="36" height="55" rx="18"/>
+  </g>
 </svg>
