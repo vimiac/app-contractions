@@ -1,25 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Suivi des contractions">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#1a1f2e"/>
-      <stop offset="1" stop-color="#0b0d12"/>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f7d6be"/>
+      <stop offset="1" stop-color="#e5826a"/>
     </linearGradient>
-    <linearGradient id="figure" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#e87ba4"/>
-      <stop offset="1" stop-color="#d55181"/>
-    </linearGradient>
+    <clipPath id="c">
+      <rect width="512" height="512" rx="114"/>
+    </clipPath>
   </defs>
-  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
-  <!-- Silhouette de femme enceinte, de face (feedback app-contractions#8) : tête +
-       ellipses empilées à recouvrement généreux (épaules → ventre → bassin), qui se
-       fondent en une seule silhouette arrondie, + jambes. Face plutôt que profil :
-       bien plus lisible à la taille d'une icône avec des formes simples. -->
-  <g fill="url(#figure)">
-    <circle cx="256" cy="108" r="28"/>
-    <ellipse cx="256" cy="170" rx="50" ry="70"/>
-    <ellipse cx="256" cy="290" rx="92" ry="90"/>
-    <ellipse cx="256" cy="380" rx="60" ry="55"/>
-    <rect x="218" y="410" width="36" height="55" rx="18"/>
-    <rect x="258" y="410" width="36" height="55" rx="18"/>
+  <!-- Icône "Aube" (design handoff BUR-88) : soleil levant à demi caché par l'horizon,
+       même composition que l'icône iOS (ios/.../AppIcon-512@2x.png), à l'échelle 512. -->
+  <g clip-path="url(#c)">
+    <rect width="512" height="512" fill="url(#g)"/>
+    <circle cx="256" cy="338" r="123" fill="#fff"/>
+    <rect y="338" width="512" height="174" fill="#c9604a"/>
+    <rect x="102" y="379" width="307" height="20" rx="10" fill="#fff" fill-opacity=".5"/>
   </g>
 </svg>

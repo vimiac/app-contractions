@@ -1,36 +1,119 @@
+/* ---------- Polices auto-hébergées (charte "Aube", BUR-88) ----------
+   Instrument Serif (titres/valeurs chiffrées) + DM Sans variable (UI).
+   Sous-ensemble latin seulement (couvre le français) : 0 appel réseau au
+   chargement, cohérent avec l'invariant "100% local / hors ligne". */
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/InstrumentSerif-Regular-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/InstrumentSerif-Italic-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 100 1000;
+  font-display: swap;
+  src: url('./assets/fonts/DMSans-latin-variable.woff2') format('woff2-variations'),
+       url('./assets/fonts/DMSans-latin-variable.woff2') format('woff2');
+}
+
 :root {
-  color-scheme: dark;
-  --bg: #14100f;
-  --surface: #1e1817;
-  --surface-2: #2a2220;
-  --surface-pressed: #332926;
-  --tabbar: #191412;
-  --line: #362c29;
-  --line-soft: #2b2321;
-  --chart-axis: #3a302c;
-  --outline: #4a3d38;
-  --ink: #f5efe9;
-  --ink-2: #cfc4bb;
-  --muted: #a09189;
-  --accent: #a8473a;        /* Bouton d'enregistrement, CTA principaux */
-  --accent-pressed: #b85242;
+  color-scheme: light;
+
+  /* ---------- Thème clair (par défaut) ---------- */
+  --bg-app: #fdf8f3;
+  --surface: #ffffff;
+  --surface-2: #faeee3;
+  --surface-pressed: #f3dcc8;
+  --tabbar: #ffffff;
+  --line: #ecded5;
+  --line-soft: #f1e6de;
+  --chart-axis: #ecded5;
+  --outline: #ecded5;
+  --ink: #34211e;
+  --ink-2: #6d5852;
+  --muted: #a08d87;
+  --accent: #df6a55;         /* corail — bouton d'enregistrement, CTA principaux */
+  --accent-strong: #c25e53;  /* terracotta — fond plein / état actif */
+  --accent-pressed: #9c443b; /* terracotta foncé — état pressé */
   --accent-ink: #ffffff;
-  --link: #ec8f7c;
-  --success: #3f7d5c;
-  --danger: #e05a5a;
-  --danger-ink: #f08080;
+  --link: #c25e53;
+  --success: #538f70;        /* « calme » — bouton enregistré */
+  --danger: #c13c3b;
+  --danger-ink: #c13c3b;
 
   /* Couleurs de données (même couleur pour un chiffre et son graphe). */
-  --data-count: #e07a5f;    /* corail — nombre de contractions */
-  --data-interval: #81b29a; /* sauge — intervalle */
-  --data-hour: #e0a458;     /* ambre — barres 24 h */
-  --data-hour-now: #f2cc8f; /* heure en cours */
+  --data-count: #c25e53;     /* terracotta — nombre de contractions */
+  --data-interval: #538f70;  /* sauge — intervalle */
+  --data-hour: #d8953d;      /* ambre — barres 24 h */
+  --data-hour-now: #f3b999;  /* heure en cours */
 
-  --radius-control: 14px;
-  --radius-cta: 16px;
-  --radius-tile: 18px;
-  --radius-card: 22px;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Dégradé "Aube" : réservé au bouton principal au repos. */
+  --grad-aube: linear-gradient(180deg, #f8d7be 0%, #eb8373 100%);
+
+  /* Rayons (échelle unique, mappée sur les usages existants). */
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 999px;
+  --radius-control: var(--radius-md);
+  --radius-cta: var(--radius-full);
+  --radius-tile: var(--radius-lg);
+  --radius-card: var(--radius-lg);
+
+  /* Ombres (toujours teintées corail, jamais gris neutre). */
+  --shadow-sm: 0 1px 2px rgba(140, 90, 40, 0.06), 0 1px 1px rgba(140, 90, 40, 0.04);
+  --shadow-md: 0 6px 20px rgba(150, 90, 40, 0.10);
+  --shadow-glow: 0 18px 50px rgba(223, 106, 85, 0.35);
+
+  /* Mouvement. */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-breath: cubic-bezier(0.45, 0, 0.55, 1);
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-breath: 2400ms;
+
+  --font-ui: 'DM Sans', -apple-system, 'SF Pro Text', Helvetica, sans-serif;
+  --font-display: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
+  font-family: var(--font-ui);
+}
+
+/* ---------- Thème sombre ("nuit") ----------
+   Appliqué via [data-theme="dark"] sur .app, calculé en JS (App.tsx) à partir
+   du réglage utilisateur ('system' suit prefers-color-scheme). L'accent reste
+   identique (corail/terracotta ressort bien sur fond prune). */
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg-app: #240d1b;
+  --surface: #341628;
+  --surface-2: #472238;
+  --surface-pressed: #5c324b;
+  --tabbar: #341628;
+  --line: #5c324b;
+  --line-soft: #472238;
+  --chart-axis: #5c324b;
+  --outline: #5c324b;
+  --ink: #feeae1;
+  --ink-2: #d7b4b3;
+  --muted: #a38693;
+  --link: #eb8373;
+  --success: #90ceac;
+  --danger: #fb9890;
+  --danger-ink: #fb9890;
+
+  --data-count: #eb8373;
+  --data-interval: #90ceac;
+  --data-hour: #f5c076;
+  --data-hour-now: #fddeb0;
 }
 
 /* ---------- Palettes (feedback app-contractions#7) ----------
@@ -38,8 +121,8 @@
    couleurs des graphes changent ; fond/texte restent identiques pour la
    lisibilité. `.palette-corail` = défaut, redondant avec :root mais explicite. */
 .palette-corail {
-  --accent: #a8473a; --accent-pressed: #b85242; --link: #ec8f7c;
-  --data-count: #e07a5f; --data-interval: #81b29a; --data-hour: #e0a458; --data-hour-now: #f2cc8f;
+  --accent: #df6a55; --accent-pressed: #9c443b; --link: #c25e53;
+  --data-count: #c25e53; --data-interval: #538f70; --data-hour: #d8953d; --data-hour-now: #f3b999;
 }
 .palette-lavande {
   --accent: #8d79c2; --accent-pressed: #9c8bcc; --link: #c3b2ec;
@@ -63,7 +146,7 @@
 html, body, #root { height: 100%; margin: 0; }
 
 body {
-  background: var(--bg);
+  background: var(--bg-app);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
@@ -85,16 +168,32 @@ button {
   max-width: 640px;
   margin: 0 auto;
   padding-top: env(safe-area-inset-top);
+  background: var(--bg-app);
+  /* Recalcule `color` ICI (pas seulement sur body) : [data-theme="dark"] cible
+     .app, donc var(--ink) ne se résout correctement au thème sombre qu'à partir
+     de cet élément — sinon les descendants héritent la couleur déjà figée au
+     clair calculée sur body, en dehors de la portée du thème. */
+  color: var(--ink);
+  transition: background var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
 }
 
 .app-header {
   flex: none;
   padding: 4px 20px;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
 }
-.app-header h1 { font-size: 17px; font-weight: 650; letter-spacing: -0.01em; margin: 0; }
+.app-header-text { display: flex; flex-direction: column; gap: 2px; }
+.app-header h1 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  margin: 0;
+}
 .app-header-sub {
   display: flex;
   align-items: center;
@@ -107,6 +206,18 @@ button {
   background: var(--ink-2);
   flex: none;
 }
+.theme-toggle {
+  flex: none;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 2px;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.theme-toggle:active { background: var(--surface-pressed); }
+.theme-toggle svg { width: 20px; height: 20px; }
 
 .app-main {
   flex: 1;
@@ -125,10 +236,10 @@ button {
 .status-label { font-size: 15px; color: var(--muted); }
 .status-chrono {
   font-size: clamp(40px, 10dvh, 72px);
-  font-weight: 700;
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
   line-height: 1;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.01em;
   margin: 4px 0 clamp(4px, 1.2dvh, 12px);
 }
 .status-grid {
@@ -148,10 +259,16 @@ button {
   border-left: 1px solid var(--line);
 }
 .status-grid-label { font-size: 13px; color: var(--muted); }
-.status-grid-value { font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.status-grid-value { font-family: var(--font-display); font-size: 24px; font-weight: 400; font-variant-numeric: tabular-nums; }
 
 .status-empty-label { font-size: 15px; color: var(--muted); }
-.status-empty-title { font-size: 56px; font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; margin: 6px 0 10px; }
+.status-empty-title {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 11dvh, 64px);
+  font-weight: 400;
+  line-height: 1.05;
+  margin: 6px 0 10px;
+}
 .status-empty-sub { font-size: 17px; color: var(--ink-2); line-height: 1.4; }
 .status-empty-sub strong { color: var(--ink); }
 
@@ -205,39 +322,60 @@ button {
   position: relative;
 }
 .button-ring {
+  position: relative;
   width: clamp(142px, 27dvh, 182px);
   height: clamp(142px, 27dvh, 182px);
   border-radius: 50%;
   padding: 12px;
-  background: #1b1513;
-  box-shadow: inset 0 0 0 1px rgba(236, 143, 124, 0.28);
-  transition: box-shadow 0.2s ease;
+  background: var(--bg-app);
+  box-shadow: inset 0 0 0 1px rgba(223, 106, 85, 0.28);
+  transition: box-shadow 0.2s ease, background var(--dur-base) var(--ease-out);
   display: flex;
 }
-.button-ring.success { box-shadow: inset 0 0 0 1px rgba(129, 178, 154, 0.55); }
+.button-ring.success { box-shadow: inset 0 0 0 1px rgba(83, 143, 112, 0.55); }
+
+/* Halo qui respire doucement autour du bouton au repos — « l'app accompagne,
+   elle ne s'agite pas » (charte Aube, guidelines/motion.html). Coupé pendant
+   l'état "success" et pour les utilisateurs sensibles au mouvement. */
+.button-ring::before {
+  content: '';
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  background: var(--accent-strong);
+  opacity: 0;
+  z-index: -1;
+}
+.button-ring:not(.success)::before {
+  animation: aube-breath var(--dur-breath) var(--ease-breath) infinite;
+}
+@keyframes aube-breath {
+  0%, 100% { transform: scale(1); opacity: 0.55; }
+  50% { transform: scale(1.12); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .button-ring::before { animation: none !important; opacity: 0 !important; }
+}
 
 .big-button {
   flex: 1;
   border-radius: 50%;
-  background: var(--accent);
-  color: var(--accent-ink);
+  background: var(--grad-aube);
+  color: var(--ink);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  box-shadow:
-    inset 0 1.5px 0 rgba(255, 255, 255, 0.16),
-    inset 0 -10px 24px rgba(0, 0, 0, 0.18),
-    0 14px 34px rgba(120, 40, 28, 0.35);
-  transition: transform 0.08s ease, background 0.2s ease;
+  box-shadow: var(--shadow-glow);
+  transition: transform var(--dur-fast) var(--ease-out), background var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
 }
 .big-button:active { transform: scale(0.96); }
-.big-button.success { background: var(--success); }
-.big-button-verb { font-size: 30px; font-weight: 700; letter-spacing: -0.015em; }
-.big-button-hint { font-size: 15px; font-weight: 500; opacity: 0.9; }
+.big-button.success { background: var(--success); color: var(--accent-ink); box-shadow: var(--shadow-md); }
+.big-button-verb { font-family: var(--font-display); font-size: 32px; font-weight: 400; }
+.big-button-hint { font-size: 15px; font-weight: 500; opacity: 0.85; }
 .big-button-check { font-size: 40px; font-weight: 700; line-height: 1; }
-.big-button-done { font-size: 26px; font-weight: 700; letter-spacing: -0.01em; }
+.big-button-done { font-family: var(--font-display); font-size: 28px; font-weight: 400; }
 .big-button-at { font-size: 15px; font-weight: 500; opacity: 0.9; font-variant-numeric: tabular-nums; }
 
 /* Message discret anti double-appui / annulation. */
@@ -247,13 +385,13 @@ button {
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
-  background: var(--bg);
-  color: var(--ink);
-  border-radius: 999px;
+  background: var(--ink);
+  color: var(--bg-app);
+  border-radius: var(--radius-full);
   padding: 10px 16px;
   font-size: 15px;
   font-weight: 500;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-md);
 }
 
 /* Frise chronologique des 10 dernières contractions, sous le bouton (feedback app-contractions#9). */
@@ -285,10 +423,11 @@ button {
 .secondary-button {
   background: var(--surface-2);
   color: var(--ink);
-  border-radius: var(--radius-control);
+  border-radius: var(--radius-full);
   padding: 14px 20px;
   font-size: 16px;
   font-weight: 600;
+  transition: background var(--dur-fast) var(--ease-out);
 }
 .secondary-button:disabled { opacity: 0.4; }
 .secondary-button:active { background: var(--surface-pressed); }
@@ -304,26 +443,29 @@ button {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  box-shadow: var(--shadow-sm);
 }
-.tile-value { font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.tile-value { font-family: var(--font-display); font-size: 30px; font-weight: 400; font-variant-numeric: tabular-nums; }
 .tile-label { font-size: 13px; color: var(--ink-2); line-height: 1.2; }
 
 .chart-block {
   background: var(--surface);
   border-radius: var(--radius-card);
   padding: 18px;
+  box-shadow: var(--shadow-sm);
 }
 .chart-block h2 { font-size: 17px; font-weight: 650; margin: 0 0 2px; }
 .chart-sub { font-size: 13px; color: var(--muted); margin: 0 0 14px; line-height: 1.35; }
 
 .chart-tip {
-  background: var(--bg);
-  border-radius: 10px;
+  background: var(--ink);
+  color: var(--bg-app);
+  border-radius: var(--radius-sm);
   padding: 6px 10px;
   font-size: 13px;
 }
 .chart-tip-label { color: var(--muted); }
-.chart-tip-value { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
+.chart-tip-value { color: inherit; font-weight: 700; font-variant-numeric: tabular-nums; }
 
 /* ---------- Bloc « Dernière heure » (en tête de l'écran stats) ---------- */
 .last-window { padding: 18px 18px 8px; }
@@ -341,7 +483,7 @@ button {
   margin: 14px 0 12px;
 }
 .last-window-stat { display: flex; flex-direction: column; gap: 2px; }
-.last-window-stat-value { font-size: 40px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.last-window-stat-value { font-family: var(--font-display); font-size: 42px; font-weight: 400; line-height: 1; font-variant-numeric: tabular-nums; }
 .last-window-stat-label { font-size: 13px; color: var(--ink-2); }
 .last-window .recent-table { margin-top: 0; }
 .last-window-list-head {
@@ -367,8 +509,8 @@ button {
 .export-screen { display: flex; flex-direction: column; gap: 12px; padding-top: 12px; }
 
 .medical-notice {
-  border: 1px solid var(--outline);
-  border-radius: var(--radius-cta);
+  background: var(--surface-2);
+  border-radius: var(--radius-card);
   padding: 14px 16px;
   font-size: 15px;
   line-height: 1.45;
@@ -386,8 +528,9 @@ button {
   color: var(--accent-ink);
   font-size: 17px;
   font-weight: 600;
+  transition: background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
 }
-.export-primary-button:active { background: var(--accent-pressed); }
+.export-primary-button:active { background: var(--accent-pressed); transform: scale(0.98); }
 .export-primary-button:disabled { opacity: 0.4; }
 
 .export-secondary-row {
@@ -404,13 +547,14 @@ button {
 .export-preview-label { font-size: 13px; color: var(--muted); margin-top: 6px; }
 .export-preview {
   width: 100%; min-height: 180px; max-height: 220px;
-  background: var(--bg); color: var(--ink-2);
-  border-radius: 14px;
+  background: var(--surface-2); color: var(--ink-2);
+  border-radius: var(--radius-md);
   font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; line-height: 1.55; padding: 14px;
 }
 
 .danger-card {
-  border: 1px solid rgba(224, 90, 90, 0.35);
+  border: 1px solid rgba(193, 60, 59, 0.3);
+  border-radius: var(--radius-card);
   display: flex; flex-direction: column; gap: 10px;
 }
 
@@ -428,7 +572,7 @@ button {
 .palette-swatch-dot {
   width: 22px; height: 22px; border-radius: 50%;
   background: var(--accent);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 .palette-swatch-label { font-size: 11px; color: var(--ink-2); }
 .palette-swatch.selected .palette-swatch-label { color: var(--ink); font-weight: 600; }
@@ -484,8 +628,7 @@ button {
   display: flex; align-items: center; gap: 10px;
   margin: 0 16px 4px; padding: 10px 12px;
   background: var(--surface-2);
-  border: 1px solid var(--outline);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   color: var(--ink-2); font-size: 13px; line-height: 1.35;
 }
 .install-banner-icon { font-size: 1.1rem; line-height: 1; flex: none; }
@@ -494,7 +637,7 @@ button {
   display: flex; align-items: center; gap: 12px;
   margin: 0 16px 4px; padding: 12px 8px 12px 16px;
   background: var(--surface-2);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   color: var(--ink-2); font-size: 14px; line-height: 1.35;
 }
 .export-reminder-text { flex: 1; }
@@ -513,6 +656,7 @@ button {
   border-top: 1px solid var(--line);
   background: var(--tabbar);
   padding-bottom: max(env(safe-area-inset-bottom), 10px);
+  transition: background var(--dur-base) var(--ease-out);
 }
 .tab-bar button {
   background: transparent; color: var(--muted);
@@ -521,6 +665,6 @@ button {
   padding: 10px 0 2px;
   font-size: 11px; font-weight: 600;
 }
-.tab-bar button.active { color: var(--ink); }
+.tab-bar button.active { color: var(--accent); }
 .tab-icon { width: 24px; height: 24px; line-height: 1; }
 .tab-text { font-size: 11px; }

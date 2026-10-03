@@ -7,9 +7,9 @@ const config: CapacitorConfig = {
   appName: 'Suivi contractions',
   webDir: 'dist',
   ios: {
-    // Fond sombre cohérent avec le thème de l'app (#0b0d12) pour éviter
-    // le flash blanc au lancement pendant le chargement du WebView.
-    backgroundColor: '#0b0d12ff',
+    // Fond prune (charte "Aube", BUR-88) cohérent avec le splash screen et le thème
+    // sombre pour éviter un flash au lancement pendant le chargement du WebView.
+    backgroundColor: '#240d1bff',
     contentInset: 'always',
   },
 }

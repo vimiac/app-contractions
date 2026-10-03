@@ -6,10 +6,35 @@ import { TimerScreen } from './components/TimerScreen'
 import { StatsScreen } from './components/StatsScreen'
 import { ExportScreen } from './components/ExportScreen'
 import { FeedbackScreen } from './components/FeedbackScreen'
-import { loadSettings, saveSettings, ensurePersistentStorage, type Palette } from './lib/settings'
+import { loadSettings, saveSettings, ensurePersistentStorage, type Palette, type ThemeChoice } from './lib/settings'
 import { needsExportReminder, EXPORT_REMINDER_DAYS } from './lib/stats'
 
 type Tab = 'timer' | 'stats' | 'export' | 'feedback'
+
+/**
+ * Résout le thème EFFECTIF ('light'|'dark') à partir du réglage utilisateur :
+ * 'system' suit `prefers-color-scheme`, sinon le choix explicite prime.
+ */
+function resolveTheme(choice: ThemeChoice, systemDark: boolean): 'light' | 'dark' {
+  if (choice === 'system') return systemDark ? 'dark' : 'light'
+  return choice
+}
+
+function ThemeIcon({ dark }: { dark: boolean }) {
+  if (dark) {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+      </svg>
+    )
+  }
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="4.5" />
+      <path d="M12 2.5v2.5M12 19v2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M2.5 12H5M19 12h2.5M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8" />
+    </svg>
+  )
+}
 
 /**
  * Vrai si l'app tourne installée (écran d'accueil / standalone), faux en onglet navigateur.
@@ -74,6 +99,24 @@ export default function App() {
   // Tick lent : réévalue périodiquement le rappel d'export (pas besoin de 250 ms ici).
   const now = useNow(30_000, true)
 
+  // Thème clair/sombre (charte "Aube", BUR-88) : 'system' suit l'appareil, en direct.
+  const [systemDark, setSystemDark] = useState(
+    () => typeof window.matchMedia === 'function' && window.matchMedia('(prefers-color-scheme: dark)').matches,
+  )
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') return
+    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    const onChange = () => setSystemDark(mq.matches)
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
+  const effectiveTheme = resolveTheme(settings.theme, systemDark)
+  const toggleTheme = () => {
+    const s = { ...settings, theme: (effectiveTheme === 'dark' ? 'light' : 'dark') as ThemeChoice }
+    setSettings(s)
+    saveSettings(s)
+  }
+
   // Stockage persistant best effort, une seule fois au premier lancement.
   useEffect(() => {
     ensurePersistentStorage()
@@ -99,13 +142,22 @@ export default function App() {
   }
 
   return (
-    <div className={`app palette-${settings.palette}`}>
+    <div className={`app palette-${settings.palette}`} data-theme={effectiveTheme}>
       <header className="app-header">
-        <h1>Contractions</h1>
-        <div className="app-header-sub">
-          <span className="app-header-dot" aria-hidden="true" />
-          <span>Suivi personnel · pas un dispositif médical</span>
+        <div className="app-header-text">
+          <h1>Contractions</h1>
+          <div className="app-header-sub">
+            <span className="app-header-dot" aria-hidden="true" />
+            <span>Suivi personnel · pas un dispositif médical</span>
+          </div>
         </div>
+        <button
+          className="theme-toggle"
+          onClick={toggleTheme}
+          aria-label={effectiveTheme === 'dark' ? 'Passer au thème clair' : 'Passer au thème sombre'}
+        >
+          <ThemeIcon dark={effectiveTheme === 'dark'} />
+        </button>
       </header>
 
       {/* Bandeau d'installation (uniquement hors mode standalone / hors wrapper natif). */}

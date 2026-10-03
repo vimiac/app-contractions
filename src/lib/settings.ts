@@ -10,14 +10,21 @@ export const PALETTES = ['corail', 'lavande', 'menthe', 'miel', 'rose'] as const
 export type Palette = (typeof PALETTES)[number]
 const DEFAULT_PALETTE: Palette = 'corail'
 
+// Refonte charte graphique "Aube" (BUR-88) : thème clair/sombre, défaut = suit le système.
+export const THEMES = ['system', 'light', 'dark'] as const
+export type ThemeChoice = (typeof THEMES)[number]
+const DEFAULT_THEME: ThemeChoice = 'system'
+
 export interface AppSettings {
   /** Horodatage (ms epoch) du dernier export (CSV, texte ou copie), ou null. */
   lastExportAt: number | null
   /** Palette de couleurs choisie (accent + couleurs des graphes). */
   palette: Palette
+  /** Thème clair/sombre choisi ('system' = suit la préférence de l'appareil). */
+  theme: ThemeChoice
 }
 
-const DEFAULTS: AppSettings = { lastExportAt: null, palette: DEFAULT_PALETTE }
+const DEFAULTS: AppSettings = { lastExportAt: null, palette: DEFAULT_PALETTE, theme: DEFAULT_THEME }
 
 /** Charge les réglages. Tolérant : renvoie les valeurs par défaut si vide/corrompu. */
 export function loadSettings(): AppSettings {
@@ -29,6 +36,7 @@ export function loadSettings(): AppSettings {
     return {
       lastExportAt: typeof p.lastExportAt === 'number' ? p.lastExportAt : null,
       palette: PALETTES.includes(p.palette) ? p.palette : DEFAULT_PALETTE,
+      theme: THEMES.includes(p.theme) ? p.theme : DEFAULT_THEME,
     }
   } catch {
     return { ...DEFAULTS }
